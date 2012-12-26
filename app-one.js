@@ -1,10 +1,31 @@
-LibCanvas.extract();
-atom.dom(function() {
-   var canvas  = atom.dom('canvas').first;
-   var context = canvas.getContext('2d-libcanvas');
 
-   context
-      .fillAll( '#efebe7' )
-      .fill( new Rectangle( 75, 75, 30, 30 ), 'green' )
-      .fill( new Circle   ( 50, 50, 20 )    , '#c00'  );
-});
+  new function () {
+	var helper, vector, target;
+
+	LibCanvas.extract();
+
+	helper = new App.Light(new Size(600, 400));
+	target = helper.mouse.point;
+
+	vector = helper.createVector( new Circle(100, 100, 20), { zIndex: 2 })
+		.setStyle({ stroke: '#900', fill: '#300' });
+
+	helper.mouse.events.add('click', function () {
+		var targetVector = helper
+			.createVector( new Circle(target.clone(), 2) )
+			.setStyle({ fill: '#0f0' });
+
+		vector.animate({
+			props: {
+				'shape.center.x': target.x,
+				'shape.center.y': target.y
+			},
+			fn: 'elastic-out',
+			time: 1000,
+			onTick: vector.redraw,
+			onComplete: function () {
+				targetVector.destroy();
+			}
+		});
+	});
+};

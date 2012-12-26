@@ -5,11 +5,60 @@
       <link rel="stylesheet" href="style.css">
       <script src="atom.js"></script>
       <script src="libcanvas.js"></script>
-      <script src="app-one.js"></script>
+      
    </head>
-   <body>
-      <canvas>
-        <p>Ваш браузер не поддерживает canvas</p>
-      </canvas>
+   <body id="container">
+   <script>
+     //Анимация движения и отбивания кружка в прямоугольнике
+     var j = 0, x0, y0, helper;
+     LibCanvas.extract();
+     helper = new App.Light(new Size(1200, 600));
+     while (j < 50) {
+      x0 = 100;
+      y0 = 100;
+     new function ( x0, y0 ) {
+	x0 = 100;//если убрать вверх - то не работает
+      y0 = 100;
+        var vector, i, t = 0, v = 0, s = 0, dx, dy, r, xo = x0, yo = y0;
+	vector = helper.createVector( new Circle(xo, yo, 20), { zIndex: 2 })
+		.setStyle({ stroke: '#000', fill: '#000' });
+                
+        anm (600,300,0);
+        
+        function anm ( x, y, i ){
+          i++;
+          dx = ( xo - x ) ^ 2;
+          dy = ( yo - y ) ^ 2;
+          s = Math.abs( dx ) + Math.abs( dy );
+          s = Math.sqrt( s );
+          v = 0.01;
+          t = s / v;
+          t = t.toFixed(0);
+          r = 20;//100 * Math.random();
+          console.log(x+" "+y+" "+t);
+          vector.animate({
+	    props: {
+		    'shape.center.x': x,
+		    'shape.center.y': y
+              //      'shape.radius'  : r
+		   },
+	    //fn: 'elastic-out',
+	    time: t,
+	    onTick: vector.redraw,
+	    onComplete: function () {
+              x0 = x;
+              y0 = y;
+              if ( x < 600 ) x = x + Math.random() * 500;
+              else { x = x - Math.random() * 500; if ( ( x + r < 0 ) || ( x - r < 0 ) ) x = -1 * x }
+              if ( x < 300 )  y = y + Math.random() * 500;
+              else { y = y - Math.random() * 500; if ( ( y + r < 0 ) || ( y - r < 0 ) ) y = -1 * y }
+              if ( i < 20 ) anm ( x, y, i );
+	    }
+          });
+        }
+     };
+     j++;
+     }
+   </script>
    </body>
 </html>
